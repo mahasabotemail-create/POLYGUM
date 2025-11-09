@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id            Int        @id @default(autoincrement())
+  salesName     String
+  salesPhone    String
+  projectName   String
+  employer      String?
+  city          String?
+  totalArea     String?
+  substrateType String?
+  visitDateSh   String?
+  status        String     @default("جدید")
+  createdAt     DateTime   @default(now())
+
+  proposals Proposal[]
+}
+
+model Proposal {
+  id             Int      @id @default(autoincrement())
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int
+  proposalStatus String   @default("draft")
+  proposalData   Json?
+  createdAt      DateTime @default(now())
+}
+
+model IntegrationSetting {
+  id             Int      @id @default(1)
+  n8nWebhookUrl  String?
+  poligamAiKey   String?
+  updatedAt      DateTime @updatedAt
+}
