@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id            Int        @id @default(autoincrement())
+  salesName     String     @map("sales_name")
+  salesPhone    String     @map("sales_phone")
+  projectName   String     @map("project_name")
+  employer      String
+  city          String
+  totalArea     Float?     @map("total_area")
+  substrateType String     @map("substrate_type")
+  visitDateSh   String?    @map("visit_date_sh")
+  status        String     @default("جدید")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  proposals     Proposal[]
+
+  @@map("projects")
+}
+
+model Proposal {
+  id             Int       @id @default(autoincrement())
+  project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int       @map("project_id")
+  proposalStatus String    @default("draft") @map("proposal_status")
+  proposalData   Json?     @map("proposal_data")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@map("proposals")
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
